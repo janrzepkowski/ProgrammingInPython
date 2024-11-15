@@ -29,5 +29,7 @@ class Wolf:
                 self.x += self.movement * dx / distance
                 self.y += self.movement * dy / distance
 
+        return closest_sheep.index
+
     def get_position(self):
         return self.x, self.y

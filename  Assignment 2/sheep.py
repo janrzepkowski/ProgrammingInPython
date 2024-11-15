@@ -2,10 +2,11 @@ from random import choice, uniform
 
 
 class Sheep:
-    def __init__(self, movement, limit):
+    def __init__(self, movement, limit, index):
         self.x = uniform(-limit, limit)
         self.y = uniform(-limit, limit)
         self.movement = movement
+        self.index = index
 
     def move(self):
         direction = choice(['north', 'south', 'east', 'west'])
