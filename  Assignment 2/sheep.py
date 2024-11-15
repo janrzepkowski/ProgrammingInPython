@@ -1,9 +1,10 @@
-from random import random, choice
+from random import choice, uniform
+
 
 class Sheep:
     def __init__(self, movement, limit):
-        self.x = random.uniform(-limit, limit)
-        self.y = random.uniform(-limit, limit)
+        self.x = uniform(-limit, limit)
+        self.y = uniform(-limit, limit)
         self.movement = movement
 
     def move(self):
