@@ -1,7 +1,7 @@
 import json
+import csv
 from wolf import Wolf
 from sheep import Sheep
-
 
 def main():
     max_rounds = 50
@@ -14,6 +14,7 @@ def main():
     herd = [Sheep(sheep_movement, limit, index) for index in range(num_sheep)]
 
     rounds_data = []
+    alive_sheep_data = []
 
     for round_no in range(1, max_rounds + 1):
         print(f"Round {round_no}")
@@ -49,12 +50,17 @@ def main():
             ],
         }
         rounds_data.append(round_data)
+        alive_sheep_data.append([round_no, alive_sheep])
 
         print()
 
     with open("pos.json", "w") as json_file:
         json.dump(rounds_data, json_file, indent=4)
-    print("Positions saved to pos.json")
+
+    with open("alive.csv", "w", newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(["round_no", "alive_sheep"])
+        writer.writerows(alive_sheep_data)
 
 
 if __name__ == "__main__":
