@@ -1,3 +1,4 @@
+import json
 from wolf import Wolf
 from sheep import Sheep
 
@@ -12,6 +13,8 @@ def main():
     wolf = Wolf(wolf_movement)
     herd = [Sheep(sheep_movement, limit, index) for index in range(num_sheep)]
 
+    rounds_data = []
+
     for round_no in range(1, max_rounds + 1):
         print(f"Round {round_no}")
 
@@ -21,6 +24,10 @@ def main():
 
         target_sheep_index = wolf.move(herd)
         wolf_pos = wolf.get_position()
+        sheep_pos = [
+            sheep.get_position() if sheep is not None else None for sheep in herd
+        ]
+
         alive_sheep = sum(1 for sheep in herd if sheep is not None)
         print(f"Wolf position: ({wolf_pos[0]:.3f}, {wolf_pos[1]:.3f})")
         print(f"Number of alive sheep: {alive_sheep}")
@@ -34,7 +41,20 @@ def main():
             print("All sheep have been eaten.")
             break
 
+        round_data = {
+            "round_no": round_no,
+            "wolf_pos": list(wolf_pos),
+            "sheep_pos": [
+                list(pos) if pos is not None else None for pos in sheep_pos
+            ],
+        }
+        rounds_data.append(round_data)
+
         print()
+
+    with open("pos.json", "w") as json_file:
+        json.dump(rounds_data, json_file, indent=4)
+    print("Positions saved to pos.json")
 
 
 if __name__ == "__main__":
