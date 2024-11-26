@@ -3,6 +3,7 @@ import csv
 from wolf import Wolf
 from sheep import Sheep
 
+
 def main():
     max_rounds = 50
     num_sheep = 15
@@ -25,9 +26,7 @@ def main():
 
         target_sheep_index = wolf.move(herd)
         wolf_pos = wolf.get_position()
-        sheep_pos = [
-            sheep.get_position() if sheep is not None else None for sheep in herd
-        ]
+        sheep_pos = [sheep.get_position() if sheep is not None else None for sheep in herd]
 
         alive_sheep = sum(1 for sheep in herd if sheep is not None)
         print(f"Wolf position: ({wolf_pos[0]:.3f}, {wolf_pos[1]:.3f})")
@@ -45,9 +44,7 @@ def main():
         round_data = {
             "round_no": round_no,
             "wolf_pos": list(wolf_pos),
-            "sheep_pos": [
-                list(pos) if pos is not None else None for pos in sheep_pos
-            ],
+            "sheep_pos": sheep_pos,
         }
         rounds_data.append(round_data)
         alive_sheep_data.append([round_no, alive_sheep])
