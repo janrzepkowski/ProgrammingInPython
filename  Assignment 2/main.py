@@ -37,10 +37,6 @@ def main():
         else:
             print(f"The wolf is chasing sheep number: {target_sheep_index}")
 
-        if alive_sheep == 0:
-            print("All sheep have been eaten.")
-            break
-
         round_data = {
             "round_no": round_no,
             "wolf_pos": list(wolf_pos),
@@ -48,6 +44,10 @@ def main():
         }
         rounds_data.append(round_data)
         alive_sheep_data.append([round_no, alive_sheep])
+
+        if alive_sheep == 0:
+            print("All sheep have been eaten.")
+            break
 
         print()
 
