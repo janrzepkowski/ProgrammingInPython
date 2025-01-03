@@ -12,13 +12,12 @@
       This is a simple web application that allows users to add data points to a
       dataset and view the dataset.
     </p>
-
     <main>
         <h2>All Data Points</h2>
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th># &emsp;</th>
                     <th>Feature 1</th>
                     <th>Feature 2</th>
                     <th>Category</th>
@@ -26,26 +25,25 @@
                 </tr>
             </thead>
             <tbody>
-                <!--
+                {% for data_point in data_points %}
                 <tr>
-                    <td>1</td>
-                    <td>5.6</td>
-                    <td>7.8</td>
-                    <td>1</td>
+                    <td>{{ data_point.id }} &emsp;</td>
+                    <td>{{ data_point.feature1 }}</td>
+                    <td>{{ data_point.feature2 }}</td>
+                    <td>{{ data_point.category }}</td>
                     <td>
-                        <form method="POST" action="/delete/1">
+                        <form method="POST" action="{{ url_for('delete_data_point', record_id=data_point.id) }}">
                             <button type="submit">Delete</button>
                         </form>
                     </td>
                 </tr>
-                -->
+                {% endfor %}
             </tbody>
         </table>
     </main>
-
     <main>
         <h2>Add New Data Point</h2>
-        <form method="POST" action="/add">
+        <form method="POST" action="{{ url_for('add_data_point') }}">
             <label for="feature1">Feature 1:</label>
             <input type="number" id="feature1" name="feature1" required><br><br>
             <label for="feature2">Feature 2:</label>
@@ -55,6 +53,5 @@
             <button type="submit">Add</button>
         </form>
     </main>
-
   </body>
 </html>
