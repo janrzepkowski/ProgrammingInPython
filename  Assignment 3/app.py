@@ -6,10 +6,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_points.db'
 
 db.init_app(app)
 
+@app.before_request
+def create_tables():
+    db.create_all()
+
 @app.route('/')
 def index():
     data_points = db.session.execute(db.select(DataPoint)).scalars().all()
-    return render_template('index.html', data_points=data_points)
+    return render_template('home.html', data_points=data_points)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -22,7 +26,8 @@ def add():
             db.session.commit()
             return redirect(url_for('index'))
         except ValueError:
-            abort(400, description="Invalid input")
+            return render_template("error.html", error_code='400 Bad Request',
+                                   error_message='The form failed validation.'), 400
     return render_template('add.html')
 
 @app.route('/delete/<int:record_id>', methods=['POST'])
@@ -68,6 +73,14 @@ def api_delete_data(record_id):
         return jsonify({"id": record_id}), 200
     else:
         abort(404, description="Record not found")
+
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template('error.html', error_code='400 Bad Request', error_message=str(error)), 400
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('error.html', error_code='404 Not Found', error_message=str(error)), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

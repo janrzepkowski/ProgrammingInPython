@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Overview</h2>
+<p>
+  This is a simple web application that allows users to add data points to a
+  dataset and view the dataset.
+</p>
+<h2>All Data Points</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID &emsp;</th>
+      <th>Feature 1</th>
+      <th>Feature 2</th>
+      <th>Category</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data_point in data_points %}
+    <tr>
+      <td>{{ data_point.id }} &emsp;</td>
+      <td>{{ data_point.feature1 }}</td>
+      <td>{{ data_point.feature2 }}</td>
+      <td>{{ data_point.category }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('delete_data_point', record_id=data_point.id) }}">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
