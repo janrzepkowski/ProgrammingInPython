@@ -11,7 +11,7 @@ def create_tables():
     db.create_all()
 
 @app.route('/')
-def index():
+def home():
     data_points = db.session.execute(db.select(DataPoint)).scalars().all()
     return render_template('home.html', data_points=data_points)
 
@@ -24,21 +24,24 @@ def add():
             category = int(request.form['category'])
             db.session.add(DataPoint(feature1=feature1, feature2=feature2, category=category))
             db.session.commit()
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
         except ValueError:
             return render_template("error.html", error_code='400 Bad Request',
-                                   error_message='The form failed validation.'), 400
-    return render_template('add.html')
+                                   error_message='Invalid input data.'), 400
+    else:
+        return render_template('add.html')
 
 @app.route('/delete/<int:record_id>', methods=['POST'])
 def delete_data_point(record_id):
-    data_point = db.session.get(DataPoint, record_id)
+    data_point = db.session.execute(db.select(DataPoint).where(DataPoint.id == record_id)).scalar()
     if data_point:
         db.session.delete(data_point)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     else:
-        abort(404, description="Record not found")
+        return render_template("error.html", error_code='404 Not Found',
+                               error_message='Record not found.'), 404
+
 
 @app.route('/api/data', methods=['GET'])
 def api_get_data():
@@ -62,7 +65,7 @@ def api_add_data():
         db.session.commit()
         return jsonify({"id": new_data_point.id}), 201
     except (ValueError, KeyError):
-        abort(400, description="Invalid data")
+        return jsonify({"error": "Invalid data"}), 400
 
 @app.route('/api/data/<int:record_id>', methods=['DELETE'])
 def api_delete_data(record_id):
@@ -72,15 +75,7 @@ def api_delete_data(record_id):
         db.session.commit()
         return jsonify({"id": record_id}), 200
     else:
-        abort(404, description="Record not found")
-
-@app.errorhandler(400)
-def bad_request(error):
-    return render_template('error.html', error_code='400 Bad Request', error_message=str(error)), 400
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('error.html', error_code='404 Not Found', error_message=str(error)), 404
+        return jsonify({"error": "Record not found"}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
