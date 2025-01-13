@@ -1,11 +1,12 @@
 import pytest
-from app import app, db, DataPoint
+from app import create_app, db, DataPoint
 
 @pytest.fixture
 def test_app():
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_data_points.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app = create_app({
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
+    })
 
     with app.app_context():
         db.create_all()
