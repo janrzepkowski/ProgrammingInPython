@@ -10,8 +10,7 @@ def create_app(config=None):
 
     db.init_app(app)
 
-    @app.before_request
-    def create_tables():
+    with app.app_context():
         db.create_all()
 
     @app.route('/')
